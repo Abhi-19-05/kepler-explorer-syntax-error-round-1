@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1 class="hero-title">
+      Welcome to <span class="gradient-text">COSMOS Analytics</span>
+    </h1>
+    <p class="hero-subtitle">
+Predict whether a Kepler Object of Interest is a confirmed exoplanet or false positive using machine learning and explore the cosmos with real-time data analytics.</p>
+    <div class="hero-buttons">
+      <a href="/classification" class="btn btn-primary">Start Analyzing</a>
+      <a href="/about" class="btn btn-secondary">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>Intelligent Classification</h3>
+      <p>Advanced ML models distinguish confirmed exoplanets from false positives with high accuracy</p>
+    </div>
+    
+    <div class="feature-card">
+      <div class="feature-icon">📏</div>
+      <h3>Radius Prediction</h3>
+      <p>Estimate planetary radius and categorize planet types from Earth-sized to Jupiter-like</p>
+    </div>
+    
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Full History Tracking</h3>
+      <p>All predictions stored automatically for easy access and historical analysis</p>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works">
+  <h2 class="section-title">How It Works</h2>
+  
+  <div class="steps-container">
+    <div class="step-item">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h3>Input Your Data</h3>
+        <p>Enter 13 transit and host star parameters</p>
+      </div>
+    </div>
+    
+    <div class="step-item">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h3>Real-Time Validation</h3>
+        <p>Client-side checks ensure data integrity</p>
+      </div>
+    </div>
+    
+    <div class="step-item">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h3>ML Inference</h3>
+        <p>Models analyze and generate predictions</p>
+      </div>
+    </div>
+    
+    <div class="step-item">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h3>View Results</h3>
+        <p>Interactive visualizations and metrics</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Example Data Section -->
+<section class="example-section">
+  <div class="example-container">
+    <div class="example-data">
+      <h3>Sample Parameters</h3>
+      <div class="data-item">
+        <span class="param">koi_period:</span>
+        <span class="value">3.52 days</span>
+      </div>
+      <div class="data-item">
+        <span class="param">koi_depth:</span>
+        <span class="value">184.0 ppm</span>
+      </div>
+      <div class="data-item">
+        <span class="param">koi_model_snr:</span>
+        <span class="value">25.3</span>
+      </div>
+    </div>
+    
+    <div class="example-prediction">
+      <h3>Prediction</h3>
+      <div class="prediction-badge confirmed">CONFIRMED</div>
+      <div class="prediction-stats">
+        <div class="stat">
+          <span class="stat-label">Confidence:</span>
+          <span class="stat-value">96%</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Radius:</span>
+          <span class="stat-value">2.41 R⊕</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Technology Features -->
+<section class="tech-features">
+  <div class="tech-grid">
+    <div class="tech-feature-card">
+      <div class="tech-icon">🔒</div>
+      <h3>Secure & Private</h3>
+      <p>Row Level Security protects your data while keeping all your predictions accessible</p>
+    </div>
+    
+    <div class="tech-feature-card">
+      <div class="tech-icon">⚡</div>
+      <h3>Lightning Fast</h3>
+      <p>Supabase Edge Functions deliver predictions in milliseconds</p>
+    </div>
+    
+    <div class="tech-feature-card">
+      <div class="tech-icon">🚀</div>
+      <h3>Production Ready</h3>
+      <p>Fully deployed and scalable infrastructure built on industry standards</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-container">
+    <h2>Ready to Explore the Cosmos?</h2>
+    <p>Leverage cutting-edge machine learning to verify exoplanets and contribute to our understanding of planetary systems</p>
+    <a href="/classification" class="btn btn-primary btn-large">Begin Analysis →</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="home-footer">
+  <div class="footer-content">
+    <div class="powered-by">
+      <span>POWERED BY</span>
+      <div class="tech-tags">
+        <span class="tech-tag">Flask</span>
+        <span class="tech-tag">SQL</span>
+        <span class="tech-tag">Machine Learning</span>
+        <span class="tech-tag">js</span>
+      </div>
+    </div>
+    <p class="footer-note">Powered by SQL & Machine Learning</p>
+    <p class="footer-data">* Data inspired by NASA Kepler Mission</p>
+    <p class="footer-made">Made By Syntax Error Team</p>
+  </div>
+</footer>
+{% endblock %}

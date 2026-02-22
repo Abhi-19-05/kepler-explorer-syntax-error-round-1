@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% block title %}Radius Prediction{% endblock %}
+
+{% block content %}
+<section class="analysis-wrapper">
+
+  <!-- Form Section -->
+  <section class="form-section">
+    <div class="form-card">
+      <div class="form-header">
+        <h2>🪐 Planet Radius Prediction</h2>
+        <p>Enter stellar and transit parameters to estimate planet radius</p>
+      </div>
+
+      <form class="classification-form" method="POST">
+        <!-- Row 1 -->
+        <div class="form-group">
+          <label>Orbital Period</label>
+          <input type="number" step="any" name="koi_period" placeholder="e.g., 1.5 days" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Impact Parameter</label>
+          <input type="number" step="any" name="koi_impact" placeholder="e.g., 0.3" required>
+        </div>
+        
+        <!-- Row 2 -->
+        <div class="form-group">
+          <label>Transit Duration</label>
+          <input type="number" step="any" name="koi_duration" placeholder="e.g., 2.5 hours" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Transit Depth</label>
+          <input type="number" step="any" name="koi_depth" placeholder="e.g., 0.01" required>
+        </div>
+        
+        <!-- Row 3 -->
+        <div class="form-group">
+          <label>Signal-to-Noise Ratio</label>
+          <input type="number" step="any" name="koi_model_snr" placeholder="e.g., 15.7" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Star Temperature</label>
+          <input type="number" step="any" name="koi_steff" placeholder="e.g., 5778 K" required>
+        </div>
+        
+        <!-- Row 4 -->
+        <div class="form-group">
+          <label>Star Gravity (logg)</label>
+          <input type="number" step="any" name="koi_slogg" placeholder="e.g., 4.4" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Star Radius</label>
+          <input type="number" step="any" name="koi_srad" placeholder="e.g., 1.0 R☉" required>
+        </div>
+        
+        <!-- Row 5 -->
+        <div class="form-group">
+          <label>Equilibrium Temp</label>
+          <input type="number" step="any" name="koi_teq" placeholder="e.g., 255 K" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Insolation Flux</label>
+          <input type="number" step="any" name="koi_insol" placeholder="e.g., 1.5 Earth flux" required>
+        </div>
+        
+        <!-- Submit Button - Full Width -->
+        <button type="submit" class="analyze-btn">📏 Predict Radius</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Results Section -->
+  {% if prediction %}
+  <section class="results-section">
+    <div class="results-card">
+      <h2>Prediction Result</h2>
+      
+      <div class="metrics-container" style="grid-template-columns: 1fr;">
+        <div class="metric-item">
+          <div class="metric-label">Predicted Radius</div>
+          <div class="metric-value">{{ prediction }} <span style="font-size: 1rem;">R⊕</span></div>
+        </div>
+      </div>
+
+      <!-- Planet Type Classification based on radius -->
+      <div class="planet-info">
+        <p>
+          <strong>Planet Classification:</strong>
+          <span class="planet-type-badge 
+            {% if prediction < 1 %}earth
+            {% elif prediction < 4 %}super-earth
+            {% else %}gas-giant
+            {% endif %}">
+            {% if prediction < 1 %}
+              Earth-sized
+            {% elif prediction < 4 %}
+              Super-Earth
+            {% else %}
+              Gas Giant
+            {% endif %}
+          </span>
+        </p>
+        <p style="margin-top: 15px; color: rgba(255,255,255,0.7);">
+          <small>• Earth-sized: &lt; 1 R⊕<br>
+          • Super-Earth: 1 - 4 R⊕<br>
+          • Gas Giant: ≥ 4 R⊕</small>
+        </p>
+      </div>
+
+      <!-- Optional: Radius Visualization -->
+      <div class="charts-container" style="grid-template-columns: 1fr; margin-top: 20px;">
+        <div class="chart-item">
+          <canvas id="radiusChart" width="200" height="200"></canvas>
+          <span>Radius Visualization</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(() => {
+  const radius = Number("{{ prediction if prediction else 0 }}");
+  
+  if (typeof Chart === 'undefined' || !radius) return;
+
+  const radEl = document.getElementById('radiusChart');
+  if (radEl) {
+    // Set max radius for visualization (cap at 10 for better visualization)
+    const maxRadius = 10;
+    const displayRadius = Math.min(radius, maxRadius);
+    
+    new Chart(radEl.getContext('2d'), {
+      type: 'doughnut',
+      data: { 
+        labels: ['Planet Radius', 'Remaining'], 
+        datasets: [{ 
+          data: [displayRadius, maxRadius - displayRadius], 
+          backgroundColor: [
+            radius < 1 ? '#4aff9e' : (radius < 4 ? '#00eaff' : '#ffaa00'),
+            'rgba(255,255,255,0.08)'
+          ],
+          borderWidth: 0
+        }] 
+      },
+      options: { 
+        plugins: { 
+          legend: { display: false },
+          tooltip: { callbacks: { label: (ctx) => `${ctx.raw} R⊕` } }
+        }, 
+        cutout: '70%',
+        responsive: true,
+        maintainAspectRatio: true
+      }
+    });
+
+    // Add radius value in the center
+    const centerText = document.createElement('div');
+    centerText.style.position = 'absolute';
+    centerText.style.top = '50%';
+    centerText.style.left = '50%';
+    centerText.style.transform = 'translate(-50%, -50%)';
+    centerText.style.fontSize = '1.5rem';
+    centerText.style.fontWeight = 'bold';
+    centerText.style.color = radius < 1 ? '#4aff9e' : (radius < 4 ? '#00eaff' : '#ffaa00');
+    centerText.innerHTML = `${radius.toFixed(2)}<span style="font-size: 0.8rem; display: block;">R⊕</span>`;
+    
+    // Make chart container position relative for absolute positioning
+    radEl.parentElement.style.position = 'relative';
+    radEl.parentElement.appendChild(centerText);
+  }
+})();
+</script>
+{% endblock %}

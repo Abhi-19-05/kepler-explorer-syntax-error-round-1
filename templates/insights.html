@@ -1,0 +1,616 @@
+{% extends "base.html" %}
+{% block title %}Insights{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+/* Section title */
+.section-title {
+  font-size: 2rem;
+  color: #fff;
+  margin: 40px 0 30px;
+  text-align: center;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #00eaff, transparent);
+}
+
+/* Insights Wrapper */
+.insights-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 100px 20px 40px;
+  position: relative;
+  z-index: 5;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: rgba(15, 20, 35, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(0, 234, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.stat-icon {
+  font-size: 2rem;
+  background: rgba(0, 234, 255, 0.1);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #00eaff;
+  line-height: 1.2;
+}
+
+/* Charts Row */
+.charts-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.chart-container {
+  background: rgba(15, 20, 35, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(0, 234, 255, 0.2);
+}
+
+.chart-container h3 {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0, 234, 255, 0.2);
+  padding-bottom: 10px;
+}
+
+.visual-card {
+  color: #fff;
+}
+
+.data-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.data-value {
+  color: #00eaff;
+  font-weight: 600;
+}
+
+/* Table Container */
+.table-container {
+  background: rgba(15, 20, 35, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 25px;
+  border: 1px solid rgba(0, 234, 255, 0.2);
+  margin-top: 20px;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.history-title {
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.session-note {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.predictions-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+  font-size: 0.85rem;
+  min-width: 1800px;
+}
+
+.predictions-table th {
+  text-align: left;
+  padding: 12px 8px;
+  background: rgba(0, 234, 255, 0.2);
+  color: #00eaff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.predictions-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+}
+
+.predictions-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status.confirmed {
+  background: rgba(36, 211, 138, 0.2);
+  color: #4aff9e;
+  border: 1px solid #4aff9e;
+}
+
+.status.false {
+  background: rgba(255, 90, 90, 0.2);
+  color: #ff5a5a;
+  border: 1px solid #ff5a5a;
+}
+
+.confidence-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.confidence-value {
+  font-weight: 600;
+  color: #4aff9e;
+}
+
+.confidence-bar-bg {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.confidence-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00eaff, #4aff9e);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.radius-value {
+  color: #00eaff;
+  font-weight: 600;
+}
+
+.planet-type.earth {
+  color: #4aff9e;
+}
+
+.planet-type.super-earth {
+  color: #00eaff;
+}
+
+.planet-type.gas-giant {
+  color: #ffaa00;
+}
+
+.no-data {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.clear-history-wrapper {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.clear-history-btn {
+  background: rgba(255, 90, 90, 0.2);
+  color: #ff5a5a;
+  border: 1px solid #ff5a5a;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.clear-history-btn:hover {
+  background: rgba(255, 90, 90, 0.3);
+  transform: translateY(-2px);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.empty-message {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.cta-button {
+  display: inline-block;
+  background: linear-gradient(45deg, #00eaff, #0066ff);
+  color: white;
+  padding: 12px 30px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 234, 255, 0.3);
+}
+
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1 class="hero-title">Cosmic Insights</h1>
+    <p class="hero-subtitle">Stellar Classification Analysis</p>
+  </div>
+</section>
+
+<!-- INSIGHTS CONTENT -->
+<div class="insights-wrapper">
+
+  <!-- STATS CARDS -->
+  <h2 class="section-title">Stellar Classification Summary</h2>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <span class="stat-label">Total Stars</span>
+        <span class="stat-value">{{ stellar_stats.total_records }}</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">🪐</div>
+      <div class="stat-content">
+        <span class="stat-label">Avg Radius</span>
+        <span class="stat-value">{{ "%.2f"|format(stellar_stats.avg_radius|float) }} R⊕</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-content">
+        <span class="stat-label">Max Radius</span>
+        <span class="stat-value">{{ "%.2f"|format(stellar_stats.max_radius|float) }} R⊕</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">⏱️</div>
+      <div class="stat-content">
+        <span class="stat-label">Avg Period</span>
+        <span class="stat-value">{{ "%.2f"|format(stellar_stats.avg_period|float) }} days</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">🌡️</div>
+      <div class="stat-content">
+        <span class="stat-label">Avg Teq</span>
+        <span class="stat-value">{{ "%.2f"|format(stellar_stats.avg_teq|float) }} K</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">☀️</div>
+      <div class="stat-content">
+        <span class="stat-label">Avg Insol</span>
+        <span class="stat-value">{{ "%.2f"|format(stellar_stats.avg_insol|float) }}</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">📡</div>
+      <div class="stat-content">
+        <span class="stat-label">Avg SNR</span>
+        <span class="stat-value">{{ "%.2f"|format(stellar_stats.avg_snr|float) }}</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-content">
+        <span class="stat-label">Session</span>
+        <span class="stat-value">{{ session_stats.total_predictions }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISUALIZATIONS -->
+  <div class="charts-row">
+    <!-- Planet Types Distribution -->
+    <div class="chart-container">
+      <h3>🌍 Planet Types Distribution</h3>
+      <div class="visual-card">
+        {% if stellar_stats.planet_types %}
+          {% for type, count in stellar_stats.planet_types.items() %}
+            <div class="data-item">
+              <span class="data-label">{{ type }}:</span>
+              <span class="data-value">{{ count }}</span>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="data-item">No data available</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Radius Distribution -->
+    <div class="chart-container">
+      <h3>📏 Radius Distribution</h3>
+      <div class="visual-card">
+        {% if stellar_stats.radius_distribution %}
+          {% for range, count in stellar_stats.radius_distribution.items() %}
+            <div class="data-item">
+              <span class="data-label">{{ range }}:</span>
+              <span class="data-value">{{ count }}</span>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="data-item">No data available</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Session Performance -->
+    <div class="chart-container">
+      <h3>📈 Session Performance</h3>
+      <div class="visual-card">
+        {% set confirmed = session_stats.confirmed_predictions|default(0) %}
+        {% set total = session_stats.total_predictions|default(0) %}
+        {% set false_pos = total - confirmed %}
+        {% set rate = (confirmed / total * 100)|round|int if total > 0 else 0 %}
+        
+        <div class="data-item">
+          <span class="data-label">Success Rate:</span>
+          <span class="data-value" style="color: #4aff9e;">{{ rate }}%</span>
+        </div>
+        <div class="data-item">
+          <span class="data-label">Confirmed:</span>
+          <span class="data-value">{{ confirmed }}</span>
+        </div>
+        <div class="data-item">
+          <span class="data-label">False Positives:</span>
+          <span class="data-value">{{ false_pos }}</span>
+        </div>
+        <div class="data-item">
+          <span class="data-label">Total:</span>
+          <span class="data-value">{{ total }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY TABLE -->
+  <!-- HISTORY TABLE -->
+<div class="table-container">
+  <div class="history-header">
+    <h3 class="history-title">🛰 Prediction History</h3>
+    <p class="session-note">Last 10 predictions from database</p>
+  </div>
+
+  {% if history and history|length > 0 %}
+  <div class="table-responsive">
+    <table class="predictions-table">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Status</th>
+          <th>Confidence</th>
+          <th>Probability</th>
+          <th>Radius (R⊕)</th>
+          <th>Planet Type</th>
+          <th>Period (d)</th>
+          <th>Time0bk</th>
+          <th>Impact</th>
+          <th>Duration</th>
+          <th>Depth (ppm)</th>
+          <th>SNR</th>
+          <th>Star Temp (K)</th>
+          <th>Star Logg</th>
+          <th>Star Radius</th>
+          <th>Eq. Temp (K)</th>
+          <th>Insolation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in history %}
+        <tr>
+          <td>{{ row.time }}</td>
+          <td>
+            {% if row.label == 'Confirmed Planet' %}
+              <span class="status confirmed">✅ Confirmed</span>
+            {% else %}
+              <span class="status false">❌ False Positive</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="confidence-wrapper">
+              <span class="confidence-value">{{ "%.1f"|format(row.confidence|float) }}%</span>
+              <div class="confidence-bar-bg">
+                <div class="confidence-bar-fill" data-width="{{ row.confidence }}"></div>
+              </div>
+            </div>
+          </td>
+          <td>{{ "%.1f"|format(row.probability|float) }}%</td>
+          <td>
+            {% if row.radius and row.radius != none and row.radius != 'None' and row.radius != 0 %}
+              <span class="radius-value">{{ "%.3f"|format(row.radius|float) }}</span>
+            {% else %}
+              <span class="no-data">—</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if row.planet_type and row.planet_type != "N/A" and row.planet_type != none %}
+              {% if row.planet_type == "Earth-sized" %}
+                <span class="planet-type earth">🌍 Earth-sized</span>
+              {% elif row.planet_type == "Super-Earth" %}
+                <span class="planet-type super-earth">🪐 Super-Earth</span>
+              {% elif row.planet_type == "Gas Giant" %}
+                <span class="planet-type gas-giant">♃ Gas Giant</span>
+              {% else %}
+                <span>{{ row.planet_type }}</span>
+              {% endif %}
+            {% else %}
+              <span class="no-data">—</span>
+            {% endif %}
+          </td>
+          <td>{{ "%.3f"|format(row.koi_period|float) if row.koi_period else '—' }}</td>
+          <td>{{ "%.4f"|format(row.koi_time0bk|float) if row.koi_time0bk else '—' }}</td>
+          <td>{{ "%.3f"|format(row.koi_impact|float) if row.koi_impact else '—' }}</td>
+          <td>{{ "%.3f"|format(row.koi_duration|float) if row.koi_duration else '—' }}</td>
+          <td>{{ "%.1f"|format(row.koi_depth|float) if row.koi_depth else '—' }}</td>
+          <td>{{ "%.2f"|format(row.koi_model_snr|float) if row.koi_model_snr else '—' }}</td>
+          <td>{{ "%.0f"|format(row.koi_steff|float) if row.koi_steff else '—' }}</td>
+          <td>{{ "%.3f"|format(row.koi_slogg|float) if row.koi_slogg else '—' }}</td>
+          <td>{{ "%.3f"|format(row.koi_srad|float) if row.koi_srad else '—' }}</td>
+          <td>{{ "%.0f"|format(row.koi_teq|float) if row.koi_teq else '—' }}</td>
+          <td>{{ "%.2f"|format(row.koi_insol|float) if row.koi_insol else '—' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Clear History Button -->
+  <div class="clear-history-wrapper">
+    <button onclick="clearHistory()" class="clear-history-btn">
+      🗑️ Clear History
+    </button>
+  </div>
+  
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🪐</div>
+    <p class="empty-message">No predictions yet. Run a classification to see your history.</p>
+    <a href="/classification" class="cta-button">🚀 Go to Classification</a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+// Function to set confidence bar widths from data-width attribute
+function setConfidenceBarWidths() {
+    document.querySelectorAll('.confidence-bar-fill').forEach(function(bar) {
+        var width = bar.getAttribute('data-width');
+        if (width) {
+            bar.style.width = width + '%';
+        }
+    });
+}
+
+// Clear history function
+function clearHistory() {
+    if (confirm('Clear all prediction history from database?')) {
+        fetch('/clear_history', { method: 'POST' })
+            .then(function(response) { return response.json(); })
+            .then(function(data) { 
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Failed to clear history: ' + data.error);
+                }
+            })
+            .catch(function() { alert('Failed to clear history'); });
+    }
+}
+
+// Run when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setConfidenceBarWidths();
+});
+
+// Also run after a short delay to catch any dynamically added content
+window.addEventListener('load', function() {
+    setConfidenceBarWidths();
+});
+</script>
+
+{% endblock %}

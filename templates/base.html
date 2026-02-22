@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Cosmos{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- Video Background -->
+<video id="backgroundVideo" autoplay muted loop playsinline>
+  <source src="{{ url_for('static', filename='background.mp4') }}" type="video/mp4">
+</video>
+
+<img src="{{ url_for('static', filename='file.svg') }}" 
+     class="floating-astronaut" 
+     alt="astronaut">
+
+<!-- Header -->
+<header class="header-nav">
+  <div class="header-container">
+    <div class="logo">COSMOS</div>
+    <nav class="nav-menu">
+      <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+      <a href="{{ url_for('classification') }}" class="nav-link">Classification</a>
+      <a href="{{ url_for('regression') }}" class="nav-link">Regression</a>
+      <a href="{{ url_for('insights') }}" class="nav-link">Insights</a>
+      <a href="{{ url_for('about') }}" class="nav-link">About</a>
+    </nav>
+  </div>
+</header>
+
+<div class="fade-page">
+  {% block content %}{% endblock %}
+</div>
+
+<script src="{{ url_for('static', filename='transition.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

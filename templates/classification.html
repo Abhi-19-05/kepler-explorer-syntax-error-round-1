@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block title %}Classification{% endblock %}
+
+{% block content %}
+<section class="analysis-wrapper">
+
+  <section class="form-section">
+    <div class="form-card">
+      <div class="form-header">
+        <h2>Enter Planet Parameters</h2>
+      </div>
+
+      <form class="classification-form" method="POST">
+        <!-- Row 1 -->
+        <div class="form-group">
+          <label>Orbital Period</label>
+          <input type="number" step="any" name="koi_period" placeholder="e.g., 1.5 days" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Transit Epoch (time0bk)</label>
+          <input type="number" step="any" name="koi_time0bk" placeholder="e.g., 132.5" required>
+        </div>
+        
+        <!-- Row 2 -->
+        <div class="form-group">
+          <label>Impact Parameter</label>
+          <input type="number" step="any" name="koi_impact" placeholder="e.g., 0.3" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Transit Duration</label>
+          <input type="number" step="any" name="koi_duration" placeholder="e.g., 2.5 hours" required>
+        </div>
+        
+        <!-- Row 3 -->
+        <div class="form-group">
+          <label>Transit Depth</label>
+          <input type="number" step="any" name="koi_depth" placeholder="e.g., 0.01" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Signal-to-Noise Ratio</label>
+          <input type="number" step="any" name="koi_model_snr" placeholder="e.g., 15.7" required>
+        </div>
+        
+        <!-- Row 4 -->
+        <div class="form-group">
+          <label>Star Temperature</label>
+          <input type="number" step="any" name="koi_steff" placeholder="e.g., 5778 K" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Star Gravity (logg)</label>
+          <input type="number" step="any" name="koi_slogg" placeholder="e.g., 4.4" required>
+        </div>
+        
+        <!-- Row 5 -->
+        <div class="form-group">
+          <label>Star Radius</label>
+          <input type="number" step="any" name="koi_srad" placeholder="e.g., 1.0 R☉" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Equilibrium Temp</label>
+          <input type="number" step="any" name="koi_teq" placeholder="e.g., 255 K" required>
+        </div>
+        
+        <!-- Row 6 - Full Width -->
+        <div class="form-group full-width">
+          <label>Insolation Flux</label>
+          <input type="number" step="any" name="koi_insol" placeholder="e.g., 1.5 Earth flux" required>
+        </div>
+        
+        <!-- Submit Button -->
+        <button type="submit" class="analyze-btn">🔍 Analyze Planet</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Results Section -->
+  {% if result %}
+  <section class="results-section">
+    <div class="results-card">
+      <h2>Classification Result</h2>
+
+      <p class="status-value {% if result.exists %}status-confirmed{% else %}status-false{% endif %}">
+        {{ result['class'] }}
+      </p>
+
+      <!-- Metrics Container -->
+      <div class="metrics-container">
+        <div class="metric-item">
+          <div class="metric-label">Confidence</div>
+          <div class="metric-value">{{ result.confidence }}%</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Probability</div>
+          <div class="metric-value">{{ result.probability }}%</div>
+        </div>
+      </div>
+
+      <!-- Charts Container -->
+      <div class="charts-container">
+        <div class="chart-item">
+          <canvas id="confidenceChart" width="70" height="70"></canvas>
+          <span>Confidence</span>
+        </div>
+        <div class="chart-item">
+          <canvas id="probabilityChart" width="140" height="70"></canvas>
+          <span>Class Probability</span>
+        </div>
+        {% if result.exists %}
+        <div class="chart-item">
+          <canvas id="radiusChart" width="70" height="70"></canvas>
+          <span>Radius (R⊕)</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Planet Info Section -->
+      {% if result.exists %}
+      <div class="planet-info">
+        <p>
+          <strong>Estimated Radius:</strong>
+          <span class="radius-value">{{ result.radius }} R⊕</span>
+        </p>
+        <p>
+          <strong>Planet Type:</strong>
+          <span class="planet-type-badge {% if result.planet_type == 'Earth-sized' %}earth{% elif result.planet_type == 'Super-Earth' %}super-earth{% elif result.planet_type == 'Gas Giant' %}gas-giant{% endif %}">
+            {{ result.planet_type }}
+          </span>
+        </p>
+      </div>
+      {% else %}
+      <div class="no-planet-message">
+        <p>❌ No planet detected — radius not applicable</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(() => {
+  const conf = Number("{{ result.confidence if result else 0 }}");
+  const prob = Number("{{ result.probability if result else 0 }}");
+
+  if (typeof Chart === 'undefined') return;
+
+  const confEl = document.getElementById('confidenceChart');
+  if (confEl) {
+    new Chart(confEl.getContext('2d'), {
+      type: 'doughnut',
+      data: { 
+        labels: ['', ''], 
+        datasets: [{ 
+          data: [conf, 100 - conf], 
+          backgroundColor: ['#24d38a', '#1f2a44'] 
+        }] 
+      },
+      options: { 
+        plugins: { legend: { display: false } }, 
+        cutout: '70%' 
+      }
+    });
+  }
+
+  const probEl = document.getElementById('probabilityChart');
+  if (probEl) {
+    new Chart(probEl.getContext('2d'), {
+      type: 'bar',
+      data: { 
+        labels: ['Confirmed', 'False Positive'], 
+        datasets: [{ 
+          data: [prob, 100 - prob], 
+          backgroundColor: ['#24d38a', '#ff5a5a'] 
+        }] 
+      },
+      options: { 
+        plugins: { legend: { display: false } }, 
+        indexAxis: 'y', 
+        scales: { 
+          x: { display: false, max: 100 }, 
+          y: { display: false } 
+        }, 
+        maintainAspectRatio: false 
+      }
+    });
+  }
+
+  const radEl = document.getElementById('radiusChart');
+  if (radEl) {
+    const radiusVal = Number("{{ result.radius if result and result.exists else 0 }}");
+    new Chart(radEl.getContext('2d'), {
+      type: 'doughnut',
+      data: { 
+        labels: ['', ''], 
+        datasets: [{ 
+          data: [radiusVal, Math.max(0, 10 - radiusVal)], 
+          backgroundColor: ['#00eaff', 'rgba(255,255,255,0.08)'] 
+        }] 
+      },
+      options: { 
+        plugins: { legend: { display: false } }, 
+        cutout: '70%' 
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}

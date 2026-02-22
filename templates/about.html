@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+
+{% block content %}
+<section class="about-wrapper">
+  
+  <!-- Hero Section -->
+  <div class="about-hero">
+    <h1 class="about-title">About COSMOS Analytics</h1>
+    <p class="about-description">
+      COSMOS Analytics is a cutting-edge machine learning system designed to revolutionize 
+      exoplanet verification. Using advanced algorithms trained on NASA's Kepler mission data, 
+      our platform analyzes transit photometry to distinguish confirmed exoplanets from false 
+      positives with unprecedented accuracy, while simultaneously predicting planetary 
+      properties such as radius estimation.
+    </p>
+  </div>
+
+  <!-- Key Features Grid -->
+  <div class="features-section">
+    <h2 class="section-title">✨ Key Features</h2>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>Dual Classification</h3>
+        <p>Simultaneous exoplanet classification (Confirmed/False Positive) and planetary radius regression with confidence scores.</p>
+      </div>
+      
+      <div class="feature-card">
+        <h3>11 Transit Parameters</h3>
+        <p>Comprehensive input including orbital period, transit depth, signal-to-noise ratio, and host star properties.</p>
+      </div>
+      
+      <div class="feature-card">
+        <h3>Full Data Persistence</h3>
+        <p>All predictions automatically stored with timestamps and parameters for historical analysis and trending.</p>
+      </div>
+      
+      <div class="feature-card">
+        <h3>Real-Time Validation</h3>
+        <p>Client-side validation ensures all inputs fall within realistic astrophysical ranges before submission.</p>
+      </div>
+      
+      <div class="feature-card">
+        <h3>Interactive Visualizations</h3>
+        <p>Beautiful Chart.js visualizations including confidence meters, probability distributions, and category analysis.</p>
+      </div>
+      
+      <div class="feature-card">
+        <h3>Prediction History</h3>
+        <p>Browse recent analyses with key metrics, track classification trends, and compare planetary discoveries.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- How It Works Section -->
+  <div class="how-it-works-section">
+    <h2 class="section-title">⚙️ How It Works</h2>
+    
+    <div class="steps-container">
+      <div class="step-item">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Input Transit Data</h3>
+          <p>Provide observational parameters from your Kepler photometry including orbital characteristics and host star properties.</p>
+        </div>
+      </div>
+      
+      <div class="step-item">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Validation & Preprocessing</h3>
+          <p>Client-side validation checks parameter ranges, then data is sent to our ML pipeline for feature engineering and scaling.</p>
+        </div>
+      </div>
+      
+      <div class="step-item">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>ML Inference</h3>
+          <p>Advanced classification model determines if the signal indicates a confirmed exoplanet or false positive, with confidence scores.</p>
+        </div>
+      </div>
+      
+      <div class="step-item">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h3>Radius Estimation</h3>
+          <p>Regression model estimates planetary radius in Earth radii and categorizes the planet type (Earth-sized, Super-Earth, Neptune-like, Jupiter-like).</p>
+        </div>
+      </div>
+      
+      <div class="step-item">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <h3>Results & Storage</h3>
+          <p>View comprehensive visualizations of your results and automatic database storage enables historical tracking and trend analysis.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Technology Stack -->
+  <  <!-- Technology Stack -->
+  <div class="tech-stack-section">
+    <h2 class="section-title">🛠️ Technology Stack</h2>
+    
+    <div class="tech-grid">
+      <div class="tech-item">
+        <span class="tech-badge">Frontend</span>
+        <span>HTML , CSS ,JS</span>
+      </div>
+      <div class="tech-item">
+        <span class="tech-badge">Backend & Database</span>
+        <span>FLASK ,SQLITE</span>
+      </div>
+    </div>
+
+    <!-- Model Training Performance -->
+    <div class="model-performance">
+      <h3 class="subsection-title">🤖 Model Training Performance</h3>
+      
+      <div class="model-tables">
+        <!-- Regression Models -->
+        <div class="model-category">
+          <h4>Radius Regression Models (R² Score)</h4>
+          <div class="table-responsive">
+            <table class="model-table">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>R² Score</th>
+                  <th>RMSE</th>
+                  <th>Training Time (s)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="top-performer">
+                  <td><strong>ExtraTreesRegressor</strong></td>
+                  <td>0.97 ⭐</td>
+                  <td>0.61</td>
+                  <td>0.91</td>
+                </tr>
+                <tr>
+                  <td>XGBRegressor</td>
+                  <td>0.89</td>
+                  <td>1.12</td>
+                  <td>0.74</td>
+                </tr>
+                <tr>
+                  <td>RandomForestRegressor</td>
+                  <td>0.84</td>
+                  <td>1.36</td>
+                  <td>3.75</td>
+                </tr>
+                <tr>
+                  <td>BaggingRegressor</td>
+                  <td>0.83</td>
+                  <td>1.39</td>
+                  <td>0.34</td>
+                </tr>
+                <tr>
+                  <td>GradientBoostingRegressor</td>
+                  <td>0.82</td>
+                  <td>1.42</td>
+                  <td>1.08</td>
+                </tr>
+                <tr>
+                  <td>HistGradientBoostingRegressor</td>
+                  <td>0.56</td>
+                  <td>2.23</td>
+                  <td>0.31</td>
+                </tr>
+                <tr>
+                  <td>LGBMRegressor</td>
+                  <td>0.53</td>
+                  <td>2.31</td>
+                  <td>0.20</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Classification Models -->
+        <div class="model-category">
+          <h4>Exoplanet Classification Models (Accuracy)</h4>
+          <div class="table-responsive">
+            <table class="model-table">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Accuracy</th>
+                  <th>Precision</th>
+                  <th>Recall</th>
+                  <th>F1 Score</th>
+                  <th>Training Time (s)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="top-performer">
+                  <td><strong>XGBClassifier</strong></td>
+                  <td>0.95 ⭐</td>
+                  <td>0.95</td>
+                  <td>0.95</td>
+                  <td>0.95</td>
+                  <td>0.73</td>
+                </tr>
+                <tr>
+                  <td>LGBMClassifier</td>
+                  <td>0.94</td>
+                  <td>0.94</td>
+                  <td>0.94</td>
+                  <td>0.94</td>
+                  <td>0.32</td>
+                </tr>
+                <tr>
+                  <td>RandomForestClassifier</td>
+                  <td>0.94</td>
+                  <td>0.94</td>
+                  <td>0.94</td>
+                  <td>0.94</td>
+                  <td>3.56</td>
+                </tr>
+                <tr>
+                  <td>ExtraTreesClassifier</td>
+                  <td>0.94</td>
+                  <td>0.94</td>
+                  <td>0.94</td>
+                  <td>0.94</td>
+                  <td>0.87</td>
+                </tr>
+                <tr>
+                  <td>BaggingClassifier</td>
+                  <td>0.93</td>
+                  <td>0.93</td>
+                  <td>0.93</td>
+                  <td>0.93</td>
+                  <td>1.00</td>
+                </tr>
+                <tr>
+                  <td>DecisionTreeClassifier</td>
+                  <td>0.91</td>
+                  <td>0.91</td>
+                  <td>0.91</td>
+                  <td>0.91</td>
+                  <td>0.19</td>
+                </tr>
+                <tr>
+                  <td>AdaBoostClassifier</td>
+                  <td>0.88</td>
+                  <td>0.89</td>
+                  <td>0.89</td>
+                  <td>0.88</td>
+                  <td>0.81</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <p class="model-note">
+        <strong>⭐ Top Performers:</strong> ExtraTreesRegressor achieves the highest R² score (0.97) for radius prediction, 
+        while XGBClassifier leads in classification accuracy (0.95). These models form the core of our ML pipeline,
+        providing reliable exoplanet verification and property estimation.
+      </p>
+    </div>
+  </div>
+  <!-- Data Source Section -->
+  <div class="data-source-section">
+    <h2 class="section-title">📡 Data Source</h2>
+    
+    <div class="data-source-content">
+      <p>This system is inspired by and trained on data from NASA's Kepler Space Telescope mission, which discovered thousands of exoplanets through transit photometry. The machine learning models use patterns from confirmed exoplanet detections to classify new candidates with high accuracy.</p>
+      
+      <p>The Kepler mission has been instrumental in understanding the prevalence and distribution of Earth-sized and smaller planets around other stars, fundamentally advancing our knowledge of planetary systems in the galaxy.</p>
+    </div>
+  </div>
+
+  <!-- Planet Classification Guide -->
+  <div class="classification-guide">
+    <h2 class="section-title"> Planet Classification Guide</h2>
+    
+    <div class="guide-grid">
+      <div class="guide-item">
+        <span class="planet-type">Earth-sized</span>
+        <span class="planet-range">&lt; 1.25 R⊕</span>
+      </div>
+      
+      <div class="guide-item">
+        <span class="planet-type">Super-Earth</span>
+        <span class="planet-range">1.25 - 2.0 R⊕</span>
+      </div>
+      
+      <div class="guide-item">
+        <span class="planet-type">Neptune-like</span>
+        <span class="planet-range">2.0 - 6.0 R⊕</span>
+      </div>
+      
+      <div class="guide-item">
+        <span class="planet-type">Jupiter-like</span>
+        <span class="planet-range">&gt; 6.0 R⊕</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="faq-section">
+    <h2 class="section-title">❓ Frequently Asked Questions</h2>
+    
+    <div class="faq-list">
+      <div class="faq-item">
+        <input type="checkbox" id="faq1" class="faq-toggle">
+        <label for="faq1" class="faq-question">What is a Kepler Object of Interest (KOI)?</label>
+        <div class="faq-answer">
+          <p>A Kepler Object of Interest (KOI) is a star observed by the Kepler space telescope that shows periodic dips in brightness, suggesting the presence of a transiting planet. These signals are analyzed and categorized based on the likelihood of being caused by an actual planet versus false positives like binary stars or instrumental effects.</p>
+        </div>
+      </div>
+      
+      <div class="faq-item">
+        <input type="checkbox" id="faq2" class="faq-toggle">
+        <label for="faq2" class="faq-question">How accurate are the predictions?</label>
+        <div class="faq-answer">
+          <p>Our models achieve approximately 95% accuracy on validation data, with confidence scores provided for each prediction. The classification model has been trained on thousands of confirmed Kepler objects, while the regression model shows strong correlation with actual planetary radii within 0.5 Earth radii error margin for confirmed exoplanets.</p>
+        </div>
+      </div>
+      
+      <div class="faq-item">
+        <input type="checkbox" id="faq3" class="faq-toggle">
+        <label for="faq3" class="faq-question">What do the input parameters mean?</label>
+        <div class="faq-answer">
+          <p>Input parameters include orbital period (days), transit duration (hours), transit depth (ppm), signal-to-noise ratio, star temperature (K), star gravity (log g), star radius (solar radii), equilibrium temperature (K), and insolation flux (Earth flux). Each parameter helps characterize both the transit signal and the host star properties.</p>
+        </div>
+      </div>
+      
+      <div class="faq-item">
+        <input type="checkbox" id="faq4" class="faq-toggle">
+        <label for="faq4" class="faq-question">Is my data stored and shared?</label>
+        <div class="faq-answer">
+          <p>All predictions are stored locally in our database for research purposes and to provide you with historical analysis. Your data is never shared with third parties and is only used to improve our models and provide you with insights about your own prediction history.</p>
+        </div>
+      </div>
+      
+      <div class="faq-item">
+        <input type="checkbox" id="faq5" class="faq-toggle">
+        <label for="faq5" class="faq-question">Can I use this for academic research?</label>
+        <div class="faq-answer">
+          <p>Absolutely! This tool is designed to assist researchers and astronomy enthusiasts in analyzing Kepler data. If you use our predictions in your research, we kindly ask you to cite our project. Please contact us for more information about the underlying models and methodology.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Team Section -->
+  <div class="team-section">
+    <h2 class="section-title">👥 Meet the Team</h2>
+    
+    <div class="team-badge">
+      <span class="team-name">"Syntax Error"</span>
+    </div>
+    
+    <div class="team-grid">
+      <div class="team-member">
+        <div class="member-avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <h3 class="member-name">Abhinandan pakhare</h3>
+        <p class="member-role">Data Science Enthusiast</p>
+        <!-- <p class="member-bio">Specializes in astrophysical ML models and transit photometry analysis. Leads the model development for exoplanet classification.</p> -->
+      </div>
+      
+      <div class="team-member">
+        <div class="member-avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <h3 class="member-name">Animesh Kewale</h3>
+        <p class="member-role">Machine Learning & AI Enthusiast</p>
+        <!-- <p class="member-bio">Architected the frontend visualization system and database integration. Ensures seamless user experience and real-time data processing.</p> -->
+      </div>
+      
+      <div class="team-member">
+        <div class="member-avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <h3 class="member-name">Rajat kantode</h3>
+        <p class="member-role">Machine Learning & AI Enthusiast</p>
+        <!-- <p class="member-bio">Expert in Kepler mission data processing and feature engineering. Developed the validation pipelines and statistical analysis tools.</p> -->
+      </div>
+    </div>
+  </div>
+
+</section>
+{% endblock %}
