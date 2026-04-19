@@ -1,0 +1,37 @@
+name: Flask Docker CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest   # use this unless you already configured self-hosted runner
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Login to Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Build Docker Image
+      run: docker build -t abhinandan1905/kepler-explorer-syntax-error-round-1:latest .
+
+    - name: Push Docker Image
+      run: docker push abhinandan1905/kepler-explorer-syntax-error-round-1:latest
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull abhinandan1905/kepler-explorer-syntax-error-round-1:latest
+          
+          docker stop flask-app || true
+          docker rm flask-app || true
+          
+          docker run -d -p 80:5000 --name flask-app abhinandan1905/kepler-explorer-syntax-error-round-1:latest
