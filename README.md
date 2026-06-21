@@ -1,5 +1,7 @@
 # 🚀 Kepler Explorer
 Machine Learning-Powered Exoplanet Classification & Analysis  
+### 🌐 Project Link
+🔗 [Click Here to Open COSMOS Analytics](https://kepler-explorer-syntax-error-round-1-2h6f.onrender.com/)
 **Team Syntax Error | Round 1**
 
 Kepler Explorer is a web application powered by machine learning that analyzes transit photometry data from NASA's Kepler Space Telescope to detect and characterize exoplanet candidates. It combines classification and regression models to provide detailed exoplanet insights with an intuitive, space-themed interface for researchers, students, and space enthusiasts.
